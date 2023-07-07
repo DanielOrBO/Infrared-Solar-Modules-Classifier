@@ -21,7 +21,8 @@ def convert_to_binary(x):
 def J2Anottation(DATA_PATH, METADATA_PATH):
     
     df = pd.read_json(METADATA_PATH, orient='index').sort_index()
-    df["image_filepath"] = df.anomaly_class.apply(lambda x: os.path.join(DATA_PATH, convert_to_binary(x)))
+    # df["image_filepath"] = df.anomaly_class.apply(lambda x: os.path.join(DATA_PATH, convert_to_binary(x)))
+    df['image_filepath'] = df.image_filepath.apply(lambda x: os.path.join(DATA_PATH, x))
     df["anomaly_class"] = df.anomaly_class.apply(convert_to_binary).sort_index()
     return df
 
