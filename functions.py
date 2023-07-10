@@ -6,6 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
+import mysql.connector
 from tensorflow.keras.applications import VGG16
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.imagenet_utils import preprocess_input
@@ -61,4 +62,42 @@ def dataframe(df):
     return sample
 
 def PreDS (x , number_datos = 20):
-    return x [0][:number_datos]
+    return np.array([x [0][:number_datos]])
+
+def ReadDB():
+    
+    conn =  mysql.connector.connect(
+    host = "localhost",
+    user = "root",
+    password = "",
+    database = "Paneles_img")
+    # El cursor es el que nos permite interactuar con la bbdd
+    cursor = conn.cursor()
+
+    sql = """ SELECT * FROM FEATURES"""
+    cursor.execute(sql)
+    Features = cursor.fetchall()
+    df = pd.DataFrame(Features)
+
+    return df
+
+def UploadDB (df):
+
+    conn =  mysql.connector.connect(
+    host = "localhost",
+    user = "root",
+    password = "",
+    #port = "3306" # Se puede omitir (lo comentamos), se coloca por defecto
+    database = "Paneles_img"
+    )
+    cursor = conn.cursor()
+    tabla = "imagenes"
+    columnas = ', '.join(df.columns)
+
+    consulta = f"INSERT INTO {tabla} ({columnas}) VALUES "
+
+    valores = ", ".join(["%s"] * len(df.columns))
+    cursor.executemany(consulta + f"({valores})", df.values.tolist())
+
+    conn.commit()
+    conn.close()
