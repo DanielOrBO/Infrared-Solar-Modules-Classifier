@@ -1,5 +1,3 @@
-def example1():
-    return "test"
 
 import os 
 import pandas as pd
