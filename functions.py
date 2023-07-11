@@ -55,7 +55,7 @@ def dataframe(df):
     for n in range(len(filas)):
         
         Features = ExtFwVGG16(df["image_filepath"][filas[n]])
-        sample.iloc[n,2::] = Features[0]
+        sample.iloc[n,2::] = Features[0].tolist()
     
     return sample
 
